@@ -206,9 +206,9 @@ export default function App() {
                       onChange={(e) => storePhoto(p.id, e.target.files?.[0])}
                     />
                     <b>＋ Photo</b>
+                    <span className="pricebadge">{fmtINR(p.price)}</span>
                   </label>
                   <div className="pinfo">
-                    <small>{p.category}</small>
                     {editId === p.id ? (
                       <div className="nameedit">
                         <input
@@ -221,22 +221,22 @@ export default function App() {
                             if (e.key === "Escape") { setEditId(null); setEditText(""); }
                           }}
                         />
-                        <button className="ok" onClick={commitRename}>✓ Save</button>
-                        <button className="cancel" onClick={() => { setEditId(null); setEditText(""); }}>✕</button>
+                        <div className="actions">
+                          <button className="ok" onClick={commitRename}>✓ Save</button>
+                          <button className="cancel" onClick={() => { setEditId(null); setEditText(""); }}>✕</button>
+                        </div>
                       </div>
                     ) : (
-                      <h3 className="nameline">
+                      <h3
+                        className="nameline"
+                        title={`${p.unit}${p.packQty ? ` · ${p.packQty} pcs/set` : ""} · ${p.category}`}
+                      >
                         <span className="nm">{nameOf(p)}</span>
                         <button className="rename" title="Edit name" onClick={() => startRename(p)}>✎</button>
                         {names[p.id] && <em className="renamed">renamed</em>}
                       </h3>
                     )}
-                    <p>
-                      {p.unit}
-                      {p.packQty ? ` · ${p.packQty} pcs/set` : ""}
-                    </p>
                     <div className="pfoot">
-                      <strong>{fmtINR(p.price)}</strong>
                       <div className="step">
                         <button disabled={!cart[p.id]} onClick={() => changeQty(p.id, -1)}>
                           −
