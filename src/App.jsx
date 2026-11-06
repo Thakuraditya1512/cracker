@@ -93,6 +93,15 @@ export default function App() {
     reader.readAsDataURL(file);
   }
 
+  // Remove a stored photo (back to the name-only placeholder).
+  function removePhoto(id) {
+    setImages((v) => {
+      const next = { ...v };
+      delete next[id];
+      return next;
+    });
+  }
+
   // Rename a product inline. Custom names are stored per id and used everywhere.
   function startRename(p) {
     setEditId(p.id);
@@ -205,8 +214,20 @@ export default function App() {
                       capture="environment"
                       onChange={(e) => storePhoto(p.id, e.target.files?.[0])}
                     />
-                    <b>＋ Photo</b>
-                    <span className="pricebadge">{fmtINR(p.price)}</span>
+                    <b>{images[p.id] ? "⟳ Change" : "＋ Photo"}</b>
+                    {images[p.id] && (
+                      <button
+                        className="removephoto"
+                        title="Remove photo"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          removePhoto(p.id);
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
                   </label>
                   <div className="pinfo">
                     {editId === p.id ? (
@@ -237,6 +258,7 @@ export default function App() {
                       </h3>
                     )}
                     <div className="pfoot">
+                      <strong className="amt">{fmtINR(p.price)}</strong>
                       <div className="step">
                         <button disabled={!cart[p.id]} onClick={() => changeQty(p.id, -1)}>
                           −
